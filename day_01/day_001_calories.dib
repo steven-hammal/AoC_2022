@@ -23,7 +23,7 @@ The rules of the challenge do not make it clear but we need to return the max to
 
 using System.IO;
 
-public int GetMaxElfCaloriesFromFile(List<string> allElfCalories)
+public int GetMaxElfCaloriesFrom(List<string> allElfCalories)
 {
     
     // Add an extra "empty line" in order to ensure the last elf's total is 
@@ -58,12 +58,12 @@ public int GetMaxElfCaloriesFromFile(List<string> allElfCalories)
 #!csharp
 
 var testCase1 = new List<string> { "1", "2", "", "1", "6"};
-var testResult1 = GetMaxElfCaloriesFromFile(testCase1);
+var testResult1 = GetMaxElfCaloriesFrom(testCase1);
 
 Console.WriteLine(testResult1 == 7);
 
 var testCase2 = new List<string> { "1", "5", "", "3"};
-var testResult2 = GetMaxElfCaloriesFromFile(testCase2);
+var testResult2 = GetMaxElfCaloriesFrom(testCase2);
 
 Console.WriteLine(testResult2 == 6);
 
@@ -74,6 +74,6 @@ Console.WriteLine(testResult2 == 6);
 #!csharp
 
 var allElfCalories = File.ReadLines("input.txt").ToList();
-var answer = GetMaxElfCaloriesFromFile(allElfCalories);
+var answer = GetMaxElfCaloriesFrom(allElfCalories);
 
 Console.WriteLine(answer);
