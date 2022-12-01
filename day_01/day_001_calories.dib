@@ -1,0 +1,79 @@
+#!markdown
+
+#Advent of Code Day 1: Calories
+
+Given an input representing the calorie count of snacks held by individual elves, find the single elf carrying the **most** calories and return how many calories that is.
+
+Input is a text file where numbers on each line denote the calories in a single snack.  Blank lines separate elves.
+
+## Example Input
+
+```
+1000
+2000
+
+3000
+```
+
+This would mean there are two elves, one of which has two snacks totalling 3000 calories and the second having one snack of 3000 calories.
+
+The rules of the challenge do not make it clear but we need to return the max total calories per elf so even if there are multiple elves with the same calories we only return the single value they share.
+
+#!csharp
+
+using System.IO;
+
+public int GetMaxElfCaloriesFromFile(List<string> allElfCalories)
+{
+    
+    // Add an extra "empty line" in order to ensure the last elf's total is 
+    // included in the output
+    allElfCalories.Add("");
+
+    int intCalories;
+    int currentElfTotal = 0;
+    var calorieTotalsPerElf = new List<int>();
+
+    // I feel like there is a way to so this using Array.Aggregate()
+    // (essentially the reduce function) but I can't get it working
+    allElfCalories.ForEach(snackCalories => {    
+        if(Int32.TryParse(snackCalories, out intCalories))
+        {
+            currentElfTotal += intCalories;
+        }
+        else
+        {
+            calorieTotalsPerElf.Add(currentElfTotal);
+            currentElfTotal = 0;
+        }
+    });
+
+    return calorieTotalsPerElf.Max();
+}
+
+#!markdown
+
+# Test Cases
+
+#!csharp
+
+var testCase1 = new List<string> { "1", "2", "", "1", "6"};
+var testResult1 = GetMaxElfCaloriesFromFile(testCase1);
+
+Console.WriteLine(testResult1 == 7);
+
+var testCase2 = new List<string> { "1", "5", "", "3"};
+var testResult2 = GetMaxElfCaloriesFromFile(testCase2);
+
+Console.WriteLine(testResult2 == 6);
+
+#!markdown
+
+# Real Answer
+
+#!csharp
+
+var allElfCalories = File.ReadLines("input.txt").ToList();
+var answer = GetMaxElfCaloriesFromFile(allElfCalories);
+
+Console.WriteLine(answer);
