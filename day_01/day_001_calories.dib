@@ -1,6 +1,6 @@
 #!markdown
 
-#Advent of Code Day 1: Calories
+# Advent of Code Day 1: Calories
 
 Given an input representing the calorie count of snacks held by individual elves, find the single elf carrying the **most** calories and return how many calories that is.
 
@@ -23,9 +23,8 @@ The rules of the challenge do not make it clear but we need to return the max to
 
 using System.IO;
 
-public int GetMaxElfCaloriesFrom(List<string> allElfCalories)
+public List<int> GetPerElfCalorieTotalsFrom(List<string> allElfCalories)
 {
-    
     // Add an extra "empty line" in order to ensure the last elf's total is 
     // included in the output
     allElfCalories.Add("");
@@ -48,12 +47,28 @@ public int GetMaxElfCaloriesFrom(List<string> allElfCalories)
         }
     });
 
-    return calorieTotalsPerElf.Max();
+    return calorieTotalsPerElf;
+}
+
+// Task 1
+public int GetMaxElfCaloriesFrom(List<string> allElfCalories)
+{
+   return GetPerElfCalorieTotalsFrom(allElfCalories).Max();
+}
+
+//Task 2
+public int GetTotalCaloriesOfTop(int topX, List<string> allElfCalories)
+{
+    var perElfCalorieTotals = GetPerElfCalorieTotalsFrom(allElfCalories);
+    perElfCalorieTotals.Sort();
+    perElfCalorieTotals.Reverse();
+
+    return perElfCalorieTotals.Take(topX).Sum();
 }
 
 #!markdown
 
-# Test Cases
+### Task 1 Test Cases
 
 #!csharp
 
@@ -74,11 +89,38 @@ Console.WriteLine(testResult3 == 4);
 
 #!markdown
 
-# Real Answer
+### Task 1 Answer
 
 #!csharp
 
 var allElfCalories = File.ReadLines("input.txt").ToList();
 var answer = GetMaxElfCaloriesFrom(allElfCalories);
+
+Console.WriteLine(answer);
+
+#!markdown
+
+### Task 2 Test Cases
+
+#!csharp
+
+var testCase1 = new List<string> { "1", "2", "", "1", "6", "", "1", "", "1", "4"};
+var testResult1 = GetTotalCaloriesOfTop(3, testCase1);
+
+Console.WriteLine(testResult1 == 15);
+
+var testCase2 = new List<string> { "1", "6", "", "1", "2", "", "1", "", "1", "4"};
+var testResult2 = GetTotalCaloriesOfTop(2, testCase2);
+
+Console.WriteLine(testResult2 == 12);
+
+#!markdown
+
+### Task 2 Answer
+
+#!csharp
+
+var allElfCalories = File.ReadLines("input.txt").ToList();
+var answer = GetTotalCaloriesOfTop(3, allElfCalories);
 
 Console.WriteLine(answer);
