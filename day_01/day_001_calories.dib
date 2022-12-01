@@ -67,6 +67,11 @@ var testResult2 = GetMaxElfCaloriesFrom(testCase2);
 
 Console.WriteLine(testResult2 == 6);
 
+var testCase3 = new List<string> { "3", "1", "", "2", "", "4"};
+var testResult3 = GetMaxElfCaloriesFrom(testCase3);
+
+Console.WriteLine(testResult3 == 4);
+
 #!markdown
 
 # Real Answer
