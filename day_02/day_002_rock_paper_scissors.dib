@@ -28,32 +28,67 @@ Given an input, calculate your total score if the strategy played out exactly as
 
 using System.IO;
 
+enum Moves
+{
+    Rock = 1,
+    A = Rock,
+    X = Rock,
+    Paper = 2,
+    B = Paper,
+    Y = Paper,
+    Scissors = 3,
+    C = Scissors,
+    Z = Scissors    
+}
+
+enum Scores
+{
+    Win = 6,
+    Draw = 3,
+    Loss = 0
+}
+
 public List<(int, int)> GetRoundsFromFile(string filename)
 {
-    // Read file in and call GetRoundMoves for each line
     var roundStrings = File.ReadLines(filename);
 
-    throw new NotImplementedException();
+    return roundStrings.Select(round => GetRoundMovesFrom(round)).ToList();
 }
 
 public (int, int) GetRoundMovesFrom(string line)
 {
-    // Given a string "A Y", convert to an int, int tuple
+    var move = line.Split(" ");
 
-    throw new NotImplementedException();
+    try
+    {
+        // Least clean code here.  Converts the char moves into their point values
+        return ((int)(Moves)Enum.Parse(typeof(Moves), move[0]), (int)(Moves)Enum.Parse(typeof(Moves), move[1]));
+    }
+    catch(ArgumentException exception)
+    {
+        Console.WriteLine(exception.Message);
+        throw exception;
+    }
 }
 
 public int ScoreRound((int, int) round)
 {
-    // Given an int, int tuple work out a player's score applying the rules as given
+    // I know its a nested ternary but I think it reads nearly alright
+    var score = detemrineScore(round.Item1, round.Item2);
 
-    throw new NotImplementedException();
+    return round.Item2 + score;
+}
+
+public int detemrineScore(int opponentMove, int playerMove)
+{
+    var winningPlayer = (3 + opponentMove - playerMove) % 3;
+
+    return winningPlayer == 2 ? (int) Scores.Win : winningPlayer == 1 ? (int) Scores.Loss : (int) Scores.Draw;
 }
 
 public int GetTotalScoreFrom(List<(int, int)> rounds)
 {
-    // Find a player's total score given a strategy in the form of int, int tuples
-    throw new NotImplementedException();
+    return rounds.Select(round => ScoreRound((round))).Sum();
 }
 
 #!markdown
@@ -75,14 +110,21 @@ var testResult2 = GetTotalScoreFrom(testCase2);
 Console.WriteLine(testResult2 == 6);
 
 // 1 win, 1 loss, 1 draw
-var testCase3 = new List<(int, int)> { (1,2), (2,3), (3,1) };
+var testCase3 = new List<(int, int)> { (1,2), (1,3), (3,3) };
 var testResult3 = GetTotalScoreFrom(testCase3);
 
-Console.WriteLine(testResult3 == 15);
+Console.WriteLine(testResult3 == 17);
 
 #!markdown
 
 ## Part 1 Answer
+
+#!csharp
+
+var strategyRounds = GetRoundsFromFile("day_2_input.txt");
+var answer = GetTotalScoreFrom(strategyRounds);
+
+Console.WriteLine(answer);
 
 #!markdown
 
