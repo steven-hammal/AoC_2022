@@ -73,7 +73,6 @@ public (int, int) GetRoundMovesFrom(string line)
 
 public int ScoreRound((int, int) round)
 {
-    // I know its a nested ternary but I think it reads nearly alright
     var score = detemrineScore(round.Item1, round.Item2);
 
     return round.Item2 + score;
