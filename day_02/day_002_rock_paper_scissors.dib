@@ -1,3 +1,93 @@
-#!csharp
+#!markdown
 
 # Advent of Code Day 2: Rock, Paper, Scissors
+
+We are given an input representing your proposed strategy in the game of the form
+
+```
+A Y
+B X
+C Z
+```
+
+A, B, C are your oponent's moves, X, Y, Z are yours.  The strategy attempts lead to your victory without winning every round.  Scoring is dependent on the outcome of the round **and** which move you play:
+
+```
+A | X = 1     Win  = 6
+B | Y = 2     Lose = 0
+C | Z = 3     Draw = 3
+```
+
+Given an input, calculate your total score if the strategy played out exactly as give.
+
+#!markdown
+
+## Solution Functions
+
+#!csharp
+
+using System.IO;
+
+public List<(int, int)> GetRoundsFromFile(string filename)
+{
+    // Read file in and call GetRoundMoves for each line
+    var roundStrings = File.ReadLines(filename);
+
+    throw new NotImplementedException();
+}
+
+public (int, int) GetRoundMovesFrom(string line)
+{
+    // Given a string "A Y", convert to an int, int tuple
+
+    throw new NotImplementedException();
+}
+
+public int ScoreRound((int, int) round)
+{
+    // Given an int, int tuple work out a player's score applying the rules as given
+
+    throw new NotImplementedException();
+}
+
+public int GetTotalScoreFrom(List<(int, int)> rounds)
+{
+    // Find a player's total score given a strategy in the form of int, int tuples
+    throw new NotImplementedException();
+}
+
+#!markdown
+
+## Part 1 Test Cases
+
+#!csharp
+
+// 3 wins
+var testCase1 = new List<(int, int)> { (1,2), (2,3), (3,1) };
+var testResult1 = GetTotalScoreFrom(testCase1);
+
+Console.WriteLine(testResult1 == 24);
+
+// 3 loses
+var testCase2 = new List<(int, int)> { (2,1), (3,2), (1,3) };
+var testResult2 = GetTotalScoreFrom(testCase2);
+
+Console.WriteLine(testResult2 == 6);
+
+// 1 win, 1 loss, 1 draw
+var testCase3 = new List<(int, int)> { (1,2), (2,3), (3,1) };
+var testResult3 = GetTotalScoreFrom(testCase3);
+
+Console.WriteLine(testResult3 == 15);
+
+#!markdown
+
+## Part 1 Answer
+
+#!markdown
+
+## Part 2 Test Cases
+
+#!markdown
+
+## Part 2 Answer
