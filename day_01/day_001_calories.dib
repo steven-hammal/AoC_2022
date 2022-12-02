@@ -93,7 +93,7 @@ Console.WriteLine(testResult3 == 4);
 
 #!csharp
 
-var allElfCalories = File.ReadLines("input.txt").ToList();
+var allElfCalories = File.ReadLines("day_1_input.txt").ToList();
 var answer = GetMaxElfCaloriesFrom(allElfCalories);
 
 Console.WriteLine(answer);
@@ -120,7 +120,7 @@ Console.WriteLine(testResult2 == 12);
 
 #!csharp
 
-var allElfCalories = File.ReadLines("input.txt").ToList();
+var allElfCalories = File.ReadLines("day_1_input.txt").ToList();
 var answer = GetTotalCaloriesOfTop(3, allElfCalories);
 
 Console.WriteLine(answer);
