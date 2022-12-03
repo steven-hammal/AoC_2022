@@ -1,0 +1,85 @@
+#!markdown
+
+# Advent of Code Day 3: Rucksack Items
+
+### Part 1
+
+* Read in strings of items
+* Split exactly im half
+* Find chars duplicated between the two halves
+* Map duplicates to their score
+* Find sum of all duplicate priority scores
+
+#!markdown
+
+## Solution Functions
+
+#!csharp
+
+using System.IO;
+
+// Create a utils class to avoid having to duplicate this every day
+public List<string> GetRucksacksFromFile(string filename)
+{
+    return File.ReadLines(filename).ToList();
+}
+
+public int GetCharPriorityScoreFrom(char item)
+{
+    return  Char.IsUpper(item) ? (item & 0b11111) + 26 : item & 0b11111;
+}
+
+public int GetDuplicateScoreFrom(string rucksack)
+{
+    // Requirements state all compartments contain equal items per rucksack so
+    // assumption is made that we do not have to handkle odd numbered rucksack totals
+    var compartment1 = rucksack.Substring(0, (int)(rucksack.Length / 2));
+    var compartment2 = rucksack.Substring((int)(rucksack.Length / 2), (int)(rucksack.Length / 2));
+
+    var duplicatedItems = new List<char>();
+    
+    foreach (char item in compartment1)
+    {
+        if(compartment2.Contains(item))
+        {
+            duplicatedItems.Add(item);
+        }
+    }
+
+    return duplicatedItems.Distinct().Select(duplicatedItem => GetCharPriorityScoreFrom(duplicatedItem)).Sum();
+}
+
+public int GetPriorityTotalFrom(List<string> rucksacks)
+{
+    return rucksacks.Select(rucksack => GetDuplicateScoreFrom(rucksack)).Sum();
+}
+
+#!markdown
+
+## Part 1 Test Cases
+
+#!csharp
+
+var testInput1 = new List<string> { "vJrwpWtwJgWrhcsFMMfFFhFp", "jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL", "PmmdzqPrVvPwwTWBwg" };
+var testResult1 = GetPriorityTotalFrom(testInput1);
+
+Console.WriteLine(testResult1 == 96);
+
+#!markdown
+
+## Part 1 Answer
+
+#!csharp
+
+var rucksacks = GetRucksacksFromFile("day_3_input.txt");
+var answer = GetPriorityTotalFrom(rucksacks);
+
+Console.WriteLine(answer);
+
+#!markdown
+
+## Part 2 Test Cases
+
+#!markdown
+
+## Part 2 Answer
