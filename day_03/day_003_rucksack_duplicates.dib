@@ -10,6 +10,12 @@
 * Map duplicates to their score
 * Find sum of all duplicate priority scores
 
+### Part 2
+
+* Group all lines into sets of three
+* Find the only duplicated char in each set
+* Find the sum of the priority scores of the duplicated char from each set
+
 #!markdown
 
 ## Solution Functions
@@ -54,6 +60,26 @@ public int GetPriorityTotalFrom(List<string> rucksacks)
     return rucksacks.Select(rucksack => GetDuplicateScoreFrom(rucksack)).Sum();
 }
 
+public int GetGroupBadgePriorityScoreFrom(List<string> rucksacks)
+{
+    var groups = rucksacks.Chunk(3);
+
+    return groups.Select(group => GetGroupBadgeScoreFor(group)).Sum();
+}
+
+public int GetGroupBadgeScoreFor(List<string> group)
+{
+    var groupRucksacksAsChars = group.Select(rucksack => rucksack.ToCharArray()).ToArray();
+
+    var repeatedItemsInFirstTwoRucksacks = groupRucksacksAsChars[0].Intersect(groupRucksacksAsChars[1]);
+    var totalRepeatedItems = repeatedItemsInFirstTwoRucksacks.Intersect(groupRucksacksAsChars[2]).ToList();
+
+    return GetCharPriorityScoreFrom(totalRepeatedItems.SingleOrDefault());
+}
+
+// TODO: If ever have time, refactor this to use char[] for part 1 and generalise the intersect to accept any number of groups,
+// then we can use the same function to solve both parts
+
 #!markdown
 
 ## Part 1 Test Cases
@@ -80,6 +106,30 @@ Console.WriteLine(answer);
 
 ## Part 2 Test Cases
 
+#!csharp
+
+var testInput1 = new List<string> { "vJrwpWtwJgWrhcsFMMfFFhFp", "jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL", "PmmdzqPrVvPwwTWBwg" };
+var testResult1 = GetGroupBadgePriorityScoreFrom(testInput1);
+
+Console.WriteLine(testResult1 == 18);
+
+var testInput2 = new List<string> { "wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn", "ttgJtRGJQctTZtZT", "CrZsJsPPZsGzwwsLwLmpwMDw" };
+var testResult2 = GetGroupBadgePriorityScoreFrom(testInput2);
+
+Console.WriteLine(testResult2 == 52);
+
+var testInput3 = testInput1.Concat(testInput2).ToList();
+var testResult3 = GetGroupBadgePriorityScoreFrom(testInput3);
+
+Console.WriteLine(testResult1 == 18);
+
 #!markdown
 
 ## Part 2 Answer
+
+#!csharp
+
+var rucksacks = GetRucksacksFromFile("day_3_input.txt");
+var answer = GetGroupBadgePriorityScoreFrom(rucksacks);
+
+Console.WriteLine(answer);
