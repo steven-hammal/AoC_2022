@@ -31,9 +31,26 @@ public class SectionPair
     }
 }
 
-public int CountTotalOverlapsIn(List<string> sectionPairs)
+public int CountAllOverlapsIn(List<string> sectionPairs)
 {
-    return sectionPairs.Where(s => ContainsTotalOverlap(GetSectionPairFrom(s))).Count();
+    return sectionPairs.Where(section => ContainsOverlap(GetSectionPairFrom(section))).Count();
+}
+
+public int CountCompleteOverlapsIn(List<string> sectionPairs)
+{
+    return sectionPairs.Where(section => ContainsTotalOverlap(GetSectionPairFrom(section))).Count();
+}
+
+public bool ContainsOverlap(SectionPair sectionPair)
+{
+    return GetIntersectionOf(sectionPair).Any();
+}
+
+public bool ContainsTotalOverlap(SectionPair sectionPair)
+{
+    var intersection = GetIntersectionOf(sectionPair);   
+
+    return (!sectionPair.SectionOne.Except(intersection).Any()) || (!sectionPair.SectionTwo.Except(intersection).Any());
 }
 
 public SectionPair GetSectionPairFrom(string line)
@@ -44,13 +61,6 @@ public SectionPair GetSectionPairFrom(string line)
     return new SectionPair(sectionRanges.Select(rangeStrings => Enumerable.Range(Int16.Parse(rangeStrings[0]), (Int16.Parse(rangeStrings[1]) - Int16.Parse(rangeStrings[0]) + 1)).ToList()).ToList());
 }
 
-public bool ContainsTotalOverlap(SectionPair sectionPair)
-{
-    var intersection = GetIntersectionOf(sectionPair);   
-
-    return (!sectionPair.SectionOne.Except(intersection).Any()) || (!sectionPair.SectionTwo.Except(intersection).Any());
-}
-
 public List<int> GetIntersectionOf(SectionPair sectionPair)
 {
     // sectionPair.SectionOne.ToList().ForEach(i => Console.Write(i));
@@ -58,7 +68,7 @@ public List<int> GetIntersectionOf(SectionPair sectionPair)
     // sectionPair.SectionTwo.ToList().ForEach(i => Console.Write(i));
     // Console.WriteLine();
 
-    var x = sectionPair.SectionOne.Intersect(sectionPair.SectionTwo).ToList();
+    // var x = sectionPair.SectionOne.Intersect(sectionPair.SectionTwo).ToList();
     
     // x.ForEach(i => Console.Write(i));
     // Console.WriteLine();
@@ -74,7 +84,7 @@ public List<int> GetIntersectionOf(SectionPair sectionPair)
 #!csharp
 
 var testInput1 = new List<string> { "2-4,6-8", "2-3,4-5", "5-7,7-9", "2-8,3-7", "6-6,4-6", "2-6,4-8" };
-var testResult1 = CountTotalOverlapsIn(testInput1);
+var testResult1 = CountCompleteOverlapsIn(testInput1);
 
 Console.WriteLine(testResult1 == 2);
 
@@ -85,7 +95,7 @@ Console.WriteLine(testResult1 == 2);
 #!csharp
 
 var sectionPairStrings = GetSectionPairsFromFile("day_4_input.txt");
-var answer = CountTotalOverlapsIn(sectionPairStrings);
+var answer = CountCompleteOverlapsIn(sectionPairStrings);
 
 Console.WriteLine(answer);
 
@@ -93,6 +103,20 @@ Console.WriteLine(answer);
 
 ## Part 2 Test Cases
 
+#!csharp
+
+var testInput1 = new List<string> { "2-4,6-8", "2-3,4-5", "5-7,7-9", "2-8,3-7", "6-6,4-6", "2-6,4-8" };
+var testResult1 = CountAllOverlapsIn(testInput1);
+
+Console.WriteLine(testResult1 == 4);
+
 #!markdown
 
 ## Part 2 Answer
+
+#!csharp
+
+var sectionPairStrings = GetSectionPairsFromFile("day_4_input.txt");
+var answer = CountAllOverlapsIn(sectionPairStrings);
+
+Console.WriteLine(answer);
