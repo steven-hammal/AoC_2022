@@ -19,24 +19,52 @@ public List<string> GetSectionPairsFromFile(string filename)
     return File.ReadLines(filename).ToList();
 }
 
+public class SectionPair
+{
+    public IEnumerable<int> SectionOne {get; set; }
+    public IEnumerable<int> SectionTwo {get; set; }
+
+    public SectionPair(List<List<int>> sectionsList)
+    {
+        SectionOne = sectionsList.First();
+        SectionTwo = sectionsList.Last();
+    }
+}
+
 public int CountTotalOverlapsIn(List<string> sectionPairs)
 {
-    throw new NotImplementedException();
+    return sectionPairs.Where(s => ContainsTotalOverlap(GetSectionPairFrom(s))).Count();
 }
 
-public (List<int>, List<int>) GetSectionPairsFrom(string line)
+public SectionPair GetSectionPairFrom(string line)
 {
-    throw new NotImplementedException();
+    var sections = line.Split(",");
+    var sectionRanges = sections.Select(section => section.Split("-"));
+
+    return new SectionPair(sectionRanges.Select(rangeStrings => Enumerable.Range(Int16.Parse(rangeStrings[0]), (Int16.Parse(rangeStrings[1]) - Int16.Parse(rangeStrings[0]) + 1)).ToList()).ToList());
 }
 
-public List<int> GetIntersectionOf((List<int>, List<int>) sectionPair)
+public bool ContainsTotalOverlap(SectionPair sectionPair)
 {
-    throw new NotImplementedException();
+    var intersection = GetIntersectionOf(sectionPair);   
+
+    return (!sectionPair.SectionOne.Except(intersection).Any()) || (!sectionPair.SectionTwo.Except(intersection).Any());
 }
 
-public bool ContainsTotalOverlap((List<int>, List<int>) sectionPair)
+public List<int> GetIntersectionOf(SectionPair sectionPair)
 {
-    throw new NotImplementedException();
+    // sectionPair.SectionOne.ToList().ForEach(i => Console.Write(i));
+    // Console.WriteLine();
+    // sectionPair.SectionTwo.ToList().ForEach(i => Console.Write(i));
+    // Console.WriteLine();
+
+    var x = sectionPair.SectionOne.Intersect(sectionPair.SectionTwo).ToList();
+    
+    // x.ForEach(i => Console.Write(i));
+    // Console.WriteLine();
+    // Console.WriteLine();
+
+    return sectionPair.SectionOne.Intersect(sectionPair.SectionTwo).ToList();
 }
 
 #!markdown
