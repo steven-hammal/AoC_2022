@@ -1,0 +1,70 @@
+#!markdown
+
+# Advent of Code Day 4: Overlapping Sections
+
+
+*Brief overview of the challenge.  A useful way to clarify the requirements before starting to code*
+
+#!markdown
+
+## Solution Functions
+
+#!csharp
+
+using System.IO;
+
+// Create a utils class to avoid having to duplicate this every day
+public List<string> GetSectionPairsFromFile(string filename)
+{
+    return File.ReadLines(filename).ToList();
+}
+
+public int CountTotalOverlapsIn(List<string> sectionPairs)
+{
+    throw new NotImplementedException();
+}
+
+public (List<int>, List<int>) GetSectionPairsFrom(string line)
+{
+    throw new NotImplementedException();
+}
+
+public List<int> GetIntersectionOf((List<int>, List<int>) sectionPair)
+{
+    throw new NotImplementedException();
+}
+
+public bool ContainsTotalOverlap((List<int>, List<int>) sectionPair)
+{
+    throw new NotImplementedException();
+}
+
+#!markdown
+
+## Part 1 Test Cases
+
+#!csharp
+
+var testInput1 = new List<string> { "2-4,6-8", "2-3,4-5", "5-7,7-9", "2-8,3-7", "6-6,4-6", "2-6,4-8" };
+var testResult1 = CountTotalOverlapsIn(testInput1);
+
+Console.WriteLine(testResult1 == 2);
+
+#!markdown
+
+## Part 1 Answer
+
+#!csharp
+
+var sectionPairStrings = GetSectionPairsFromFile("day_4_input.txt");
+var answer = CountTotalOverlapsIn(sectionPairStrings);
+
+Console.WriteLine(answer);
+
+#!markdown
+
+## Part 2 Test Cases
+
+#!markdown
+
+## Part 2 Answer
