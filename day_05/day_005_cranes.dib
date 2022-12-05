@@ -1,8 +1,8 @@
 #!markdown
 
-# Advent of Code Day X: Cranes
+# Advent of Code Day X: Cranes (Stacks)
 
-What it really means is stacks.  The hardest part of this challenge is pivoting the part of the input data depicting the initial state.
+The hardest part of this challenge is pivoting the part of the input data depicting the initial state.
 
 ```
     [D]    
@@ -11,7 +11,7 @@ What it really means is stacks.  The hardest part of this challenge is pivoting 
  1   2   3 
 ```
 
-Needs to be parsed into:
+Needs to be parsed into stacks of the form:
 
 ```
 1 [Z][N]
@@ -19,16 +19,7 @@ Needs to be parsed into:
 3 [P]
 ```
 
-After that the rest is trivial using stacks.  Additionally I think a class to handle the instructions will be nice for clarity.  Something like:
-
-```
-public class CraneMove
-{
-    public int MoveTotal;
-    public int SourceColumn;
-    public int TargetColumn;
-}
-```
+After that the rest is trivial using stacks.
 
 #!markdown
 
@@ -50,12 +41,16 @@ public List<string> GetAllLinesFromFile(string filename)
     return File.ReadLines(filename).ToList();
 }
 
+// Clearly the next step is to make a CrateMover interface with a
+// crateMover.Apply(List<CraneMove> moves) method then have a
+// 9000 and 9001 concrete of the interface with their own implementations
+// of the method.  This will remove all the below nasty code duplication
 public string FindTopCratesUsingCrateMover9000(List<string> inputLines)
 {
     var stacks = GetStacksFrom(GetInitialStateStringsFrom(inputLines));
     var moves = GetMovesFrom(GetMoveStringsFrom(inputLines));
 
-    moves.ForEach(move => stacks = UseCreateMover9000ToMove(stacks, move));
+    moves.ForEach(move => stacks.UseCrateMover9000ToApply(move));
 
     return string.Join("",stacks.Select(stack => stack.Peek().ToString()).ToArray());
 }
@@ -65,7 +60,7 @@ public string FindTopCratesUsingCrateMover9001(List<string> inputLines)
     var stacks = GetStacksFrom(GetInitialStateStringsFrom(inputLines));
     var moves = GetMovesFrom(GetMoveStringsFrom(inputLines));
 
-    moves.ForEach(move => stacks = UseCreateMover9001ToMove(stacks, move));
+    moves.ForEach(move => stacks.UseCrateMover9001ToApply(move));
 
     return string.Join("",stacks.Select(stack => stack.Peek().ToString()).ToArray());
 }
@@ -87,7 +82,7 @@ public List<Stack> GetStacksFrom(List<string> initialStateStrings)
         // Therefore we find the (column)th char of all lines in the initial state to get a picture of the state for a
         // particular column, if that char is a letter, then we add it to an enumerable which can be given to the constructor
         // of the Stack class.
-        var elements = initialStateStrings.Where(s => Char.IsLetter(s[ 1 + (4 * i) ])).Select(s => s[ 1 + (4 * i) ]);
+        var elements = initialStateStrings.Where(s => Char.IsLetter( s[ 1 + (4 * i) ] )).Select(s => s[ 1 + (4 * i) ]);
         stacks.Add(new Stack(elements.ToList()));
     }
 
@@ -130,8 +125,7 @@ public CraneMove GetMoveFrom(string moveString)
     };
 }
 
-// Maybe convert to extension method once logic is worked out
-public List<Stack> UseCreateMover9000ToMove(List<Stack> stacks, CraneMove move)
+public static void UseCrateMover9000ToApply(this List<Stack> stacks, CraneMove move)
 {
     var sourceStack = stacks.ElementAt(move.SourceColumn - 1);
     var targetStack = stacks.ElementAt(move.TargetColumn - 1);
@@ -140,11 +134,9 @@ public List<Stack> UseCreateMover9000ToMove(List<Stack> stacks, CraneMove move)
     {
         targetStack.Push(sourceStack.Pop());
     }
-
-    return stacks;
 }
 
-public List<Stack> UseCreateMover9001ToMove(List<Stack> stacks, CraneMove move)
+public static void UseCrateMover9001ToApply(this List<Stack> stacks, CraneMove move)
 {
     var sourceStack = stacks.ElementAt(move.SourceColumn - 1);
     var targetStack = stacks.ElementAt(move.TargetColumn - 1);
@@ -160,8 +152,6 @@ public List<Stack> UseCreateMover9001ToMove(List<Stack> stacks, CraneMove move)
     {
         targetStack.Push(intermediateStack.Pop());
     }
-
-    return stacks;
 }
 
 #!markdown
