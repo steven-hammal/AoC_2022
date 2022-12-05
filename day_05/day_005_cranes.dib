@@ -1,0 +1,171 @@
+#!markdown
+
+# Advent of Code Day X: Cranes
+
+What it really means is stacks.  The hardest part of this challenge is pivoting the part of the input data depicting the initial state.
+
+```
+    [D]    
+[N] [C]    
+[Z] [M] [P]
+ 1   2   3 
+```
+
+Needs to be parsed into:
+
+```
+1 [Z][N]
+2 [M][C][D]
+3 [P]
+```
+
+After that the rest is trivial using stacks.  Additionally I think a class to handle the instructions will be nice for clarity.  Something like:
+
+```
+public class CraneMove
+{
+    public int MoveTotal;
+    public int SourceColumn;
+    public int TargetColumn;
+}
+```
+
+#!markdown
+
+## Solution Functions
+
+#!csharp
+
+using System.IO;
+
+public class CraneMove
+{
+    public int MoveTotal { get; set; }
+    public int SourceColumn { get; set; }
+    public int TargetColumn { get; set; }
+}
+
+public List<string> GetAllLinesFromFile(string filename)
+{
+    return File.ReadLines(filename).ToList();
+}
+
+public string SolvePartOne(List<string> inputLines)
+{
+    var stacks = GetStacksFrom(GetInitialStateStringsFrom(inputLines));
+    var moves = GetMovesFrom(GetMoveStringsFrom(inputLines));
+
+    moves.ForEach(move => stacks = ApplyMoveTo(stacks, move));
+
+    return string.Join("",stacks.Select(stack => stack.Peek().ToString()).ToArray());
+}
+
+public List<Stack> GetStacksFrom(List<string> initialStateStrings)
+{
+    var numberOfColumns = GetNumberOfColumnsFrom(initialStateStrings.Last());
+    initialStateStrings.RemoveAt(initialStateStrings.Count -1);
+    initialStateStrings.Reverse();
+
+    var stacks = new List<Stack>();
+
+    for(int i = 0; i < numberOfColumns; i++ )
+    {
+        var elements = initialStateStrings.Where(s => Char.IsLetter(s[ 1 + (4 * i) ])).Select(s => s[ 1 + (4 * i) ]);
+        stacks.Add(new Stack(elements.ToList()));
+    }
+
+    return stacks.ToList();
+}
+
+public int GetNumberOfColumnsFrom(string columnIndicatorLine)
+{
+    return Int16.Parse(columnIndicatorLine.Substring(columnIndicatorLine.Length - 2, 1));
+}
+
+public List<string> GetInitialStateStringsFrom(List<string> lines)
+{
+    var splitIndex = lines.FindIndex(line => line == "");
+
+    return lines.Skip(0).Take(splitIndex).ToList();
+}
+
+public List<string> GetMoveStringsFrom(List<string> lines)
+{
+    var splitIndex = lines.FindIndex(line => line == "");
+
+    return lines.Skip(splitIndex + 1).Take(lines.Count - (splitIndex + 1)).ToList();
+}
+
+public List<CraneMove> GetMovesFrom(IEnumerable<string> moveStrings)
+{
+    return moveStrings.ToList().Select(moveString => GetMoveFrom(moveString)).ToList();
+}
+
+public CraneMove GetMoveFrom(string moveString)
+{
+    // We are assuming here that the input format will always be exactyl as stated in the challenge
+    var moveNumbers = moveString.Split(" ").Where(e => int.TryParse(e, out _));
+    return new CraneMove
+    {
+        MoveTotal = Int16.Parse(moveNumbers.ElementAt(0)),
+        SourceColumn = Int16.Parse(moveNumbers.ElementAt(1)),
+        TargetColumn = Int16.Parse(moveNumbers.ElementAt(2))
+    };
+}
+
+// Maybe convert to extension method once logic is worked out
+public List<Stack> ApplyMoveTo(List<Stack> stacks, CraneMove move)
+{
+    var sourceStack = stacks.ElementAt(move.SourceColumn - 1);
+
+    var targetStack = stacks.ElementAt(move.TargetColumn - 1);
+
+    for(int i = 0; i < move.MoveTotal; i++)
+    {
+        targetStack.Push(sourceStack.Pop());
+    }
+
+    return stacks;
+}
+
+#!markdown
+
+## Part 1 Test Cases
+
+#!csharp
+
+var testCase = new List<string> {
+    "    [D]    ",
+    "[N] [C]    ",
+    "[Z] [M] [P]",
+    " 1   2   3 ",
+    "",  
+    "move 1 from 2 to 1",
+    "move 3 from 1 to 3",
+    "move 2 from 2 to 1",
+    "move 1 from 1 to 2"
+};
+
+var testResult = SolvePartOne(testCase);
+
+Console.WriteLine(testResult == "CMZ");
+
+#!markdown
+
+## Part 1 Answer
+
+#!csharp
+
+var lines = GetAllLinesFromFile("day_5_input.txt");
+
+var answer = SolvePartOne(lines);
+
+Console.WriteLine(answer);
+
+#!markdown
+
+## Part 2 Test Cases
+
+#!markdown
+
+## Part 2 Answer
