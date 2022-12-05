@@ -50,12 +50,22 @@ public List<string> GetAllLinesFromFile(string filename)
     return File.ReadLines(filename).ToList();
 }
 
-public string FindTopCratesAfterApplyingMovesTo(List<string> inputLines)
+public string FindTopCratesUsingCrateMover9000(List<string> inputLines)
 {
     var stacks = GetStacksFrom(GetInitialStateStringsFrom(inputLines));
     var moves = GetMovesFrom(GetMoveStringsFrom(inputLines));
 
-    moves.ForEach(move => stacks = ApplyMoveTo(stacks, move));
+    moves.ForEach(move => stacks = UseCreateMover9000ToMove(stacks, move));
+
+    return string.Join("",stacks.Select(stack => stack.Peek().ToString()).ToArray());
+}
+
+public string FindTopCratesUsingCrateMover9001(List<string> inputLines)
+{
+    var stacks = GetStacksFrom(GetInitialStateStringsFrom(inputLines));
+    var moves = GetMovesFrom(GetMoveStringsFrom(inputLines));
+
+    moves.ForEach(move => stacks = UseCreateMover9001ToMove(stacks, move));
 
     return string.Join("",stacks.Select(stack => stack.Peek().ToString()).ToArray());
 }
@@ -121,15 +131,34 @@ public CraneMove GetMoveFrom(string moveString)
 }
 
 // Maybe convert to extension method once logic is worked out
-public List<Stack> ApplyMoveTo(List<Stack> stacks, CraneMove move)
+public List<Stack> UseCreateMover9000ToMove(List<Stack> stacks, CraneMove move)
 {
     var sourceStack = stacks.ElementAt(move.SourceColumn - 1);
-
     var targetStack = stacks.ElementAt(move.TargetColumn - 1);
 
     for(int i = 0; i < move.MoveTotal; i++)
     {
         targetStack.Push(sourceStack.Pop());
+    }
+
+    return stacks;
+}
+
+public List<Stack> UseCreateMover9001ToMove(List<Stack> stacks, CraneMove move)
+{
+    var sourceStack = stacks.ElementAt(move.SourceColumn - 1);
+    var targetStack = stacks.ElementAt(move.TargetColumn - 1);
+
+    var intermediateStack = new Stack();
+
+    for(int i = 0; i < move.MoveTotal; i++)
+    {
+        intermediateStack.Push(sourceStack.Pop());
+    }
+
+    for(int i = 0; i < move.MoveTotal; i++)
+    {
+        targetStack.Push(intermediateStack.Pop());
     }
 
     return stacks;
@@ -153,7 +182,7 @@ var testCase = new List<string> {
     "move 1 from 1 to 2"
 };
 
-var testResult = FindTopCratesAfterApplyingMovesTo(testCase);
+var testResult = FindTopCratesUsingCrateMover9000(testCase);
 
 Console.WriteLine(testResult == "CMZ");
 
@@ -165,7 +194,7 @@ Console.WriteLine(testResult == "CMZ");
 
 var lines = GetAllLinesFromFile("day_5_input.txt");
 
-var answer = FindTopCratesAfterApplyingMovesTo(lines);
+var answer = FindTopCratesUsingCrateMover9000(lines);
 
 Console.WriteLine(answer);
 
@@ -173,6 +202,32 @@ Console.WriteLine(answer);
 
 ## Part 2 Test Cases
 
+#!csharp
+
+var testCase = new List<string> {
+    "    [D]    ",
+    "[N] [C]    ",
+    "[Z] [M] [P]",
+    " 1   2   3 ",
+    "",  
+    "move 1 from 2 to 1",
+    "move 3 from 1 to 3",
+    "move 2 from 2 to 1",
+    "move 1 from 1 to 2"
+};
+
+var testResult = FindTopCratesUsingCrateMover9001(testCase);
+
+Console.WriteLine(testResult == "MCD");
+
 #!markdown
 
 ## Part 2 Answer
+
+#!csharp
+
+var lines = GetAllLinesFromFile("day_5_input.txt");
+
+var answer = FindTopCratesUsingCrateMover9001(lines);
+
+Console.WriteLine(answer);
